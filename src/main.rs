@@ -34,8 +34,12 @@ impl Default for MyApp {
         linkage.add_point_c(0.0, 0.0);
         linkage.add_point_c(0.2, 0.2);
         linkage.add_point_c(0.4, 0.4);
-        linkage.add_point_c(0.6, 0.6);
-        linkage.add_point_c(0.8, 0.8);
+        // linkage.add_point_c(0.6, 0.6);
+
+        // linkage.add_point_c(0.8, 0.8);
+        // linkage.add_point_c(1.0, 1.0);
+        // linkage.add_point_c(1.2, 1.2);
+        // linkage.add_point_c(1.4, 1.4);
 
         let x: Vec<f32> = vec![0.0; linkage.points.len() - 1];
 

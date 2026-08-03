@@ -11,11 +11,17 @@ impl MyApp {
         }
         let screen_size = [resp.rect.width(), resp.rect.height()];
 
+        // X OFFSET FACTOR
+        let x_offset_factor = 200.;
+
         let screen_joints: Vec<Pos2> = joints
             .iter()
             .map(|&j| {
                 let s = world_to_screen(j, screen_size);
-                Pos2::new(resp.rect.min.x + s.x, resp.rect.min.y + s.y)
+                Pos2::new(
+                    resp.rect.min.x + s.x - x_offset_factor,
+                    resp.rect.min.y + s.y,
+                )
             })
             .collect();
 
