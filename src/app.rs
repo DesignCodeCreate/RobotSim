@@ -51,10 +51,15 @@ impl MyApp {
         let linkage = &mut self.linkage;
 
         for (index, angle) in self.theta_info.iter_mut().enumerate() {
-            linkage.set_angle_progressive(index + 1, *angle);
+            linkage.set_angle(index, *angle);
         }
 
-        let joints = linkage.points.iter().map(|p| p.pos).collect::<Vec<_>>();
+        let joints = linkage
+            .calculate_positions()
+            .iter()
+            .map(|p| p.pos)
+            .collect::<Vec<_>>();
+
         let screen_joints = self.convert_to_screen(&joints, resp);
 
         self.draw_points(&screen_joints, &painter);

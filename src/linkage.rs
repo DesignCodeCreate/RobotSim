@@ -3,71 +3,59 @@ use egui::Pos2;
 use crate::point::Point;
 
 pub(crate) struct Linkage {
-    pub points: Vec<Point>,
+    pub base_position: Point,
+    pub links: Vec<Link>,
+}
+
+pub struct Link {
+    pub length: f32,
+    pub angle: f32,
+}
+
+impl Link {
+    fn new(length: f32, angle: f32) -> Self {
+        Link { length, angle }
+    }
 }
 
 impl Linkage {
-    pub fn new() -> Self {
-        Self { points: Vec::new() }
-    }
-
-    pub fn add_point_c(&mut self, x: f32, y: f32) {
-        self.add_point(Point::new(egui::Pos2::new(x, y)));
-    }
-
-    fn add_point(&mut self, point: Point) {
-        self.points.push(point);
-    }
-
-    pub fn _get_angle(&self, p: usize) -> Option<f32> {
-        if p == 0 {
-            return None;
+    pub fn new(base_position: Point) -> Self {
+        Self {
+            base_position,
+            links: Vec::new(),
         }
-        let pre_con = self.points[p - 1].clone();
-        let p = self.points[p].clone();
-
-        let dy = p.pos.y - pre_con.pos.y;
-        let dx = p.pos.x - pre_con.pos.x;
-
-        // return theta
-        Some((dy / dx).atan().to_degrees())
     }
 
-    pub fn set_angle_progressive(&mut self, p: usize, theta: f32) {
-        // update all points postceding the indicated point
-        // translate all points by the same vector calculated
-        // preserve rotation by rotating by the same rotation vector
+    pub fn add_link(&mut self, length: f32, angle: f32) {
+        self.links.push(Link::new(length, angle));
+    }
 
-        if p == 0 {
-            return;
-        }
-        let pre_con = self.points[p - 1].clone();
+    pub fn set_angle(&mut self, index: usize, angle: f32) {
+        self.links[index].angle = angle;
+    }
 
-        let point = &mut self.points[p];
+    pub fn calculate_positions(&self) -> Vec<Point> {
+        let mut points = vec![Point::new(Pos2::new(
+            self.base_position.pos.x,
+            self.base_position.pos.y,
+        ))];
 
-        let old_pos = point.clone();
+        let mut current_point = self.base_position.clone();
+        let mut world_angle = 0.;
 
-        let dy = point.pos.y - pre_con.pos.y;
-        let dx = point.pos.x - pre_con.pos.x;
+        for link in &self.links {
+            world_angle += link.angle.to_radians();
+            let p1_y = link.length * world_angle.sin() + current_point.pos.y;
+            let p1_x = link.length * world_angle.cos() + current_point.pos.x;
 
-        let length = (dx.powi(2) + dy.powi(2)).sqrt();
+            let p = Point::new(Pos2::new(p1_x, p1_y));
 
-        let p_new_y = pre_con.pos.y + length * (theta.to_radians().sin());
-        let p_new_x = pre_con.pos.x + length * (theta.to_radians().cos());
+            points.push(p.clone());
 
-        point.pos.y = p_new_y;
-        point.pos.x = p_new_x;
-
-        let new_pos = Pos2::new(p_new_x, p_new_y);
-
-        let translation_vector = Pos2::new(new_pos.x - old_pos.pos.x, new_pos.y - old_pos.pos.y);
-
-        // translate all points by translation vector
-        for x in &mut self.points[(p + 1)..] {
-            x.pos.x += translation_vector.x;
-            x.pos.y += translation_vector.y;
+            current_point.pos.y = p.pos.y;
+            current_point.pos.x = p.pos.x;
         }
 
-        // preserve rotation of all points
+        points
     }
 }

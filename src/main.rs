@@ -1,7 +1,7 @@
 use eframe::egui;
-use egui::{CornerRadius, Sense, Slider};
+use egui::{CornerRadius, Pos2, Sense, Slider};
 
-use crate::linkage::Linkage;
+use crate::{linkage::Linkage, point::Point};
 mod app;
 mod linkage;
 mod point;
@@ -29,19 +29,15 @@ struct MyApp {
 
 impl Default for MyApp {
     fn default() -> Self {
-        let mut linkage = Linkage::new();
+        let mut linkage = Linkage::new(Point::new(Pos2::new(0.0, 0.0)));
+        linkage.add_link(0.2, 0.);
 
-        linkage.add_point_c(0.0, 0.0);
-        linkage.add_point_c(0.2, 0.2);
-        linkage.add_point_c(0.4, 0.4);
-        // linkage.add_point_c(0.6, 0.6);
+        linkage.add_link(0.2, 0.);
+        linkage.add_link(0.2, 0.);
 
-        // linkage.add_point_c(0.8, 0.8);
-        // linkage.add_point_c(1.0, 1.0);
-        // linkage.add_point_c(1.2, 1.2);
-        // linkage.add_point_c(1.4, 1.4);
+        let x: Vec<f32> = vec![0.0; linkage.links.len()];
 
-        let x: Vec<f32> = vec![0.0; linkage.points.len() - 1];
+        // linkage.calculate_positions();
 
         Self {
             linkage,
