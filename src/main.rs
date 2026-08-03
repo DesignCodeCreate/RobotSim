@@ -30,14 +30,12 @@ struct MyApp {
 impl Default for MyApp {
     fn default() -> Self {
         let mut linkage = Linkage::new(Point::new(Pos2::new(0.0, 0.0)));
-        linkage.add_link(0.2, 0.);
 
-        linkage.add_link(0.2, 0.);
-        linkage.add_link(0.2, 0.);
+        for _ in 0..3 {
+            linkage.add_link(10., 0.);
+        }
 
         let x: Vec<f32> = vec![0.0; linkage.links.len()];
-
-        // linkage.calculate_positions();
 
         Self {
             linkage,
@@ -60,8 +58,10 @@ impl eframe::App for MyApp {
                     ui.label("Bottom panel");
                 });
 
+                ui.spacing_mut().slider_width = 700.;
+
                 for angle in self.theta_info.iter_mut() {
-                    ui.vertical(|ui| ui.add(Slider::new(angle, -180.0..=180.0)));
+                    ui.add(Slider::new(angle, -90.0..=90.0));
                 }
             });
 

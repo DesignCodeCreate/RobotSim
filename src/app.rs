@@ -4,23 +4,17 @@ use crate::MyApp;
 
 impl MyApp {
     fn convert_to_screen(&self, joints: &Vec<Pos2>, resp: Response) -> Vec<Pos2> {
-        fn world_to_screen(world_pos: Pos2, screen_size: [f32; 2]) -> Pos2 {
-            let screen_x = (world_pos.x + 1.0) * (screen_size[0] / 2.0);
-            let screen_y = (1.0 - world_pos.y) * (screen_size[1] / 2.0);
-            Pos2::new(screen_x, screen_y)
-        }
-        let screen_size = [resp.rect.width(), resp.rect.height()];
+        let screen_center = resp.rect.center();
 
-        // X OFFSET FACTOR
-        let x_offset_factor = 200.;
+        let zoom = 10.0;
+        let x_offset = 80.;
 
         let screen_joints: Vec<Pos2> = joints
             .iter()
             .map(|&j| {
-                let s = world_to_screen(j, screen_size);
                 Pos2::new(
-                    resp.rect.min.x + s.x - x_offset_factor,
-                    resp.rect.min.y + s.y,
+                    (screen_center.x + j.x * zoom) - x_offset,
+                    screen_center.y - j.y * zoom,
                 )
             })
             .collect();
