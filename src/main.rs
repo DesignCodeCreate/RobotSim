@@ -24,6 +24,7 @@ fn main() -> Result<(), eframe::Error> {
 
 struct MyApp {
     linkage: Linkage,
+    target: Pos2,
     theta_info: Vec<f32>,
 }
 
@@ -31,13 +32,14 @@ impl Default for MyApp {
     fn default() -> Self {
         let mut linkage = Linkage::new(Point::new(Pos2::new(0.0, 0.0)));
 
-        for _ in 0..3 {
-            linkage.add_link(10., 0.);
-        }
+        linkage.add_link(3., 0.);
+        linkage.add_link(2., 0.);
 
+        let target = Pos2::new(4.0, 2.0);
         let x: Vec<f32> = vec![0.0; linkage.links.len()];
 
         Self {
+            target,
             linkage,
             theta_info: x,
         }
