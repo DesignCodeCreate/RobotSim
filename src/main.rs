@@ -32,11 +32,15 @@ impl Default for MyApp {
     fn default() -> Self {
         let mut linkage = Linkage::new(Point::new(Pos2::new(0.0, 0.0)));
 
-        linkage.add_link(3., 0.);
-        linkage.add_link(2., 0.);
+        linkage.add_link(1., 0.);
+        linkage.add_link(1., 0.);
+        linkage.add_link(1., 0.);
+        linkage.add_link(1., 0.);
 
-        let target = Pos2::new(4.0, 2.0);
-        let x: Vec<f32> = vec![0.0; linkage.links.len()];
+        let target = Pos2::new(2.0, 2.0);
+        let mut x: Vec<f32> = vec![0.0; linkage.links.len()];
+
+        x[3] = 90.;
 
         Self {
             target,

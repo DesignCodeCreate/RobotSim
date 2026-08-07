@@ -6,7 +6,7 @@ impl MyApp {
     fn convert_point_to_screen(&self, point: Pos2, resp: Response) -> Pos2 {
         let screen_center = resp.rect.center();
 
-        let zoom = 80.0;
+        let zoom = 50.0;
         let x_offset = 120.;
 
         Pos2::new(
