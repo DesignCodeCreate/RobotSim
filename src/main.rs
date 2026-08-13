@@ -26,6 +26,7 @@ struct MyApp {
     linkage: Linkage,
     target: Pos2,
     theta_info: Vec<f32>,
+    tolerance: f32,
 }
 
 impl Default for MyApp {
@@ -47,6 +48,7 @@ impl Default for MyApp {
             target,
             linkage,
             theta_info: angles,
+            tolerance: 20.
         }
     }
 }
@@ -76,8 +78,11 @@ impl eframe::App for MyApp {
                 ui.add(Slider::new(&mut self.target.y, 0.0..=10.0));
 
                 if ui.button("Calculate Angles").clicked() {
-                    self.theta_info = self.linkage.calculate_angles(20., point::Point { pos: self.target });
+                    self.theta_info = self.linkage.calculate_angles(self.tolerance, point::Point { pos: self.target });
                 }
+
+                ui.label("Tolerance");
+                ui.add(Slider::new(&mut self.tolerance, 0.0..=100.0));
             });
 
             // allocate a painter that fills the remaining central panel area
