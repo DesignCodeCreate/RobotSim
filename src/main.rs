@@ -38,7 +38,7 @@ impl Default for MyApp {
         linkage.add_link(1., 0.);
 
         let target = Pos2::new(1., 1.);
-        let angles = linkage.calculate_angles(110.566, Point::new(target));
+        let angles = vec![0.0, 0.0, 0.0];
 
         Self {
             target,
