@@ -70,6 +70,14 @@ impl eframe::App for MyApp {
                 for angle in self.theta_info.iter_mut() {
                     ui.add(Slider::new(angle, -90.0..=90.0));
                 }
+
+                ui.label("Target position");
+                ui.add(Slider::new(&mut self.target.x, 0.0..=10.0));
+                ui.add(Slider::new(&mut self.target.y, 0.0..=10.0));
+
+                if ui.button("Calculate Angles").clicked() {
+                    self.theta_info = self.linkage.calculate_angles(20., point::Point { pos: self.target });
+                }
             });
 
             // allocate a painter that fills the remaining central panel area
