@@ -56,10 +56,10 @@ impl MyApp {
         }
 
         let joints = linkage
-            .positions_from_world_angles(self.theta_info.clone())
-            .iter()
-            .map(|p| p.pos)
-            .collect::<Vec<_>>();
+                        .calculate_positions()
+                        .iter()
+                        .map(|p| p.pos)
+                        .collect::<Vec<_>>();
 
         let screen_joints = self.convert_points_to_screen(&joints, resp);
 

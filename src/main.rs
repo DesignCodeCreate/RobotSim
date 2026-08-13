@@ -36,13 +36,9 @@ impl Default for MyApp {
         linkage.add_link(1., 0.);
         linkage.add_link(1., 0.);
         linkage.add_link(1., 0.);
-        // linkage.add_link(1., 0.);
 
         let target = Pos2::new(1., 1.);
-        let mut x: Vec<f32> = vec![0.0; linkage.links.len()];
-
         let angles = linkage.calculate_angles(110.566, Point::new(target));
-        println!("{:?}", angles);
 
         Self {
             target,
@@ -52,6 +48,31 @@ impl Default for MyApp {
         }
     }
 }
+
+pub fn world_to_relative(world: &[f32]) -> Vec<f32> {
+        fn normalize_angle(angle: f32) -> f32 {
+            let mut angle = angle % 360.0;
+
+            if angle > 180.0 {
+                angle -= 360.0;
+            } else if angle < -180.0 {
+                angle += 360.0;
+            }
+
+            angle
+        }
+        let mut relative = Vec::with_capacity(world.len());
+
+        for (i, &angle) in world.iter().enumerate() {
+            if i == 0 {
+                relative.push(normalize_angle(angle));
+            } else {
+                relative.push(normalize_angle(angle - world[i - 1]));
+            }
+        }
+
+        relative
+    }
 
 impl eframe::App for MyApp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
@@ -70,19 +91,24 @@ impl eframe::App for MyApp {
                 ui.spacing_mut().slider_width = 700.;
 
                 for angle in self.theta_info.iter_mut() {
-                    ui.add(Slider::new(angle, -90.0..=90.0));
+                    ui.add(Slider::new(angle, -180.0..=180.0));
+
                 }
 
                 ui.label("Target position");
                 ui.add(Slider::new(&mut self.target.x, 0.0..=10.0));
                 ui.add(Slider::new(&mut self.target.y, 0.0..=10.0));
 
-                if ui.button("Calculate Angles").clicked() {
-                    self.theta_info = self.linkage.calculate_angles(self.tolerance, point::Point { pos: self.target });
-                }
 
                 ui.label("Tolerance");
                 ui.add(Slider::new(&mut self.tolerance, 0.0..=100.0));
+
+                if ui.button("Calculate Angles").clicked() {
+                    self.theta_info = world_to_relative(&self.linkage.calculate_angles(self.tolerance, point::Point { pos: self.target }));
+                    
+
+                }
+
             });
 
             // allocate a painter that fills the remaining central panel area

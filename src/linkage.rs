@@ -86,23 +86,4 @@ impl Linkage {
 
         points
     }
-
-    pub fn positions_from_world_angles(&self, world_angles: Vec<f32>) -> Vec<Point> {
-        let mut points = vec![self.base_position.clone()];
-        let mut current_point = self.base_position.clone();
-
-        for (link, angle) in self.links.iter().zip(world_angles.iter()) {
-            let angle = angle.to_radians();
-
-            let x = current_point.pos.x + link.length * angle.cos();
-            let y = current_point.pos.y + link.length * angle.sin();
-
-            let point = Point::new(Pos2::new(x, y));
-
-            points.push(point.clone());
-            current_point = point;
-        }
-
-        points
-    }
 }
