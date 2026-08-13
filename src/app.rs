@@ -56,7 +56,7 @@ impl MyApp {
         }
 
         let joints = linkage
-            .calculate_positions()
+            .positions_from_world_angles(self.theta_info.clone())
             .iter()
             .map(|p| p.pos)
             .collect::<Vec<_>>();

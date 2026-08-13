@@ -34,6 +34,34 @@ impl Linkage {
         self.links[index].angle = angle;
     }
 
+    pub fn calculate_angles(&mut self, tolerance: f32, target: Point) -> Vec<f32> {
+        // z = l1
+        // y = l2
+        // big x = l3
+
+        let z = self.links[0].length;
+        let y = self.links[1].length;
+        let x = self.links[2].length;
+
+        let mut angles = Vec::new();
+
+        let tolerance = tolerance.to_radians();
+
+        let m = (z - x) * tolerance.sin();
+        let k = (x + z) * tolerance.cos() + y;
+
+        let bp1 = m * target.pos.x + (k * target.pos.y);
+        let bp2 = k * target.pos.x - (m * target.pos.y);
+
+        let b = bp1.atan2(bp2);
+
+        angles.push((b + tolerance).to_degrees());
+        angles.push(b.to_degrees());
+        angles.push((b - tolerance).to_degrees());
+
+        angles
+    }
+
     pub fn calculate_positions(&self) -> Vec<Point> {
         let mut points = vec![Point::new(Pos2::new(
             self.base_position.pos.x,
@@ -54,6 +82,25 @@ impl Linkage {
 
             current_point.pos.y = p.pos.y;
             current_point.pos.x = p.pos.x;
+        }
+
+        points
+    }
+
+    pub fn positions_from_world_angles(&self, world_angles: Vec<f32>) -> Vec<Point> {
+        let mut points = vec![self.base_position.clone()];
+        let mut current_point = self.base_position.clone();
+
+        for (link, angle) in self.links.iter().zip(world_angles.iter()) {
+            let angle = angle.to_radians();
+
+            let x = current_point.pos.x + link.length * angle.cos();
+            let y = current_point.pos.y + link.length * angle.sin();
+
+            let point = Point::new(Pos2::new(x, y));
+
+            points.push(point.clone());
+            current_point = point;
         }
 
         points

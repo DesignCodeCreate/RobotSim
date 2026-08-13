@@ -35,17 +35,18 @@ impl Default for MyApp {
         linkage.add_link(1., 0.);
         linkage.add_link(1., 0.);
         linkage.add_link(1., 0.);
-        linkage.add_link(1., 0.);
+        // linkage.add_link(1., 0.);
 
-        let target = Pos2::new(2.0, 2.0);
+        let target = Pos2::new(1., 1.);
         let mut x: Vec<f32> = vec![0.0; linkage.links.len()];
 
-        x[3] = 90.;
+        let angles = linkage.calculate_angles(110.566, Point::new(target));
+        println!("{:?}", angles);
 
         Self {
             target,
             linkage,
-            theta_info: x,
+            theta_info: angles,
         }
     }
 }
