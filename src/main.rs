@@ -25,7 +25,7 @@ fn main() -> Result<(), eframe::Error> {
 struct MyApp {
     linkage: Linkage,
     target: Pos2,
-    theta_info: Vec<f32>,
+    angles: Vec<f32>,
     tolerance: f32,
 }
 
@@ -33,9 +33,9 @@ impl Default for MyApp {
     fn default() -> Self {
         let mut linkage = Linkage::new(Point::new(Pos2::new(0.0, 0.0)));
 
-        linkage.add_link(1., 0.);
-        linkage.add_link(1., 0.);
-        linkage.add_link(1., 0.);
+        linkage.add_link(1.);
+        linkage.add_link(1.);
+        linkage.add_link(1.);
 
         let target = Pos2::new(1., 1.);
         let angles = vec![0.0, 0.0, 0.0];
@@ -43,7 +43,7 @@ impl Default for MyApp {
         Self {
             target,
             linkage,
-            theta_info: angles,
+            angles,
             tolerance: 20.
         }
     }
@@ -90,7 +90,7 @@ impl eframe::App for MyApp {
 
                 ui.spacing_mut().slider_width = 700.;
 
-                for angle in self.theta_info.iter_mut() {
+                for angle in self.angles.iter_mut() {
                     ui.add(Slider::new(angle, -180.0..=180.0));
 
                 }
@@ -101,10 +101,10 @@ impl eframe::App for MyApp {
 
 
                 ui.label("Tolerance");
-                ui.add(Slider::new(&mut self.tolerance, 0.0..=100.0));
+                ui.add(Slider::new(&mut self.tolerance, -100.0..=100.0));
 
                 if ui.button("Calculate Angles").clicked() {
-                    self.theta_info = world_to_relative(&self.linkage.calculate_angles(self.tolerance, point::Point { pos: self.target }));
+                    self.angles = world_to_relative(&self.linkage.calculate_angles(self.tolerance, point::Point { pos: self.target }));
                     
 
                 }

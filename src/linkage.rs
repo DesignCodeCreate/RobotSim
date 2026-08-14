@@ -9,12 +9,11 @@ pub(crate) struct Linkage {
 
 pub struct Link {
     pub length: f32,
-    pub angle: f32,
 }
 
 impl Link {
-    fn new(length: f32, angle: f32) -> Self {
-        Link { length, angle }
+    fn new(length: f32) -> Self {
+        Link { length }
     }
 }
 
@@ -26,14 +25,23 @@ impl Linkage {
         }
     }
 
-    pub fn add_link(&mut self, length: f32, angle: f32) {
-        self.links.push(Link::new(length, angle));
+    pub fn add_link(&mut self, length: f32) {
+        self.links.push(Link::new(length));
     }
 
-    pub fn set_angle(&mut self, index: usize, angle: f32) {
-        self.links[index].angle = angle;
-    }
+    pub fn find_optimal_tolerance_angles(&mut self, target: Point) -> Vec<f32> {
+        // Bounds for tolerance are between -100.0 and 100.0
+        let initial_t = 0.0;
 
+        let angles = self.calculate_angles(initial_t, target);
+        let points = self.calculate_positions(angles);
+
+
+
+        // Return angles
+
+        Vec::new()
+    }
     pub fn calculate_angles(&mut self, tolerance: f32, target: Point) -> Vec<f32> {
         // z = l1
         // y = l2
@@ -62,7 +70,7 @@ impl Linkage {
         angles
     }
 
-    pub fn calculate_positions(&self) -> Vec<Point> {
+    pub fn calculate_positions(&self, angles: Vec<f32>) -> Vec<Point> {
         let mut points = vec![Point::new(Pos2::new(
             self.base_position.pos.x,
             self.base_position.pos.y,
@@ -71,8 +79,8 @@ impl Linkage {
         let mut current_point = self.base_position.clone();
         let mut world_angle = 0.;
 
-        for link in &self.links {
-            world_angle += link.angle.to_radians();
+        for (index, link) in self.links.iter().enumerate() {
+            world_angle += angles[index].to_radians();
             let p1_y = link.length * world_angle.sin() + current_point.pos.y;
             let p1_x = link.length * world_angle.cos() + current_point.pos.x;
 

@@ -51,12 +51,13 @@ impl MyApp {
         let target = self.convert_point_to_screen(self.target, resp.clone());
         let linkage = &mut self.linkage;
 
-        for (index, angle) in self.theta_info.iter_mut().enumerate() {
-            linkage.set_angle(index, *angle);
-        }
+        // for (index, angle) in self.theta_info.iter_mut().enumerate() {
+        //     linkage.set_angle(index, *angle);
+        // }
+
 
         let joints = linkage
-                        .calculate_positions()
+                        .calculate_positions(self.angles.clone())
                         .iter()
                         .map(|p| p.pos)
                         .collect::<Vec<_>>();
