@@ -57,7 +57,7 @@ impl MyApp {
 
 
         let joints = linkage
-                        .calculate_positions(self.angles.clone())
+                        .calculate_positions(&self.angles)
                         .iter()
                         .map(|p| p.pos)
                         .collect::<Vec<_>>();

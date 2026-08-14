@@ -27,6 +27,10 @@ struct MyApp {
     target: Pos2,
     angles: Vec<f32>,
     tolerance: f32,
+    solutions: Vec<Vec<f32>>,
+    solution_tracker: usize,
+    error_c: f32,
+    n_step: f32,
 }
 
 impl Default for MyApp {
@@ -44,7 +48,11 @@ impl Default for MyApp {
             target,
             linkage,
             angles,
-            tolerance: 20.
+            tolerance: 20.,
+            solutions: vec![vec![0.0, 0.0, 0.0]],
+            solution_tracker: 0,
+            error_c: 0.1,
+            n_step: 0.5,
         }
     }
 }
@@ -103,11 +111,34 @@ impl eframe::App for MyApp {
                 ui.label("Tolerance");
                 ui.add(Slider::new(&mut self.tolerance, -100.0..=100.0));
 
-                if ui.button("Calculate Angles").clicked() {
-                    self.angles = world_to_relative(&self.linkage.calculate_angles(self.tolerance, point::Point { pos: self.target }));
-                    
+                if ui.button("Calculate Angles Analytically").clicked() {
+                    self.angles = world_to_relative(&self.linkage.calculate_angles(self.tolerance, &point::Point { pos: self.target }));
+                }
+
+
+                ui.label("\n\n\nNumerical Algorithms ");
+
+                if ui.button("Calculate Angles Numerically").clicked() {
+                    self.solution_tracker = 0;
+                    self.solutions = self.linkage.find_optimal_tolerance_angles(point::Point { pos: self.target }, self.error_c, self.n_step);
+                    self.angles = <std::vec::Vec<f32> as Clone>::clone(&self.solutions[self.solution_tracker]);
 
                 }
+
+                if ui.button("Next solution").clicked() {
+                    if self.solutions.len() > self.solution_tracker + 1 {
+                        self.solution_tracker += 1;
+                    } else {
+                        self.solution_tracker = 0;
+                    }
+                    self.angles = <std::vec::Vec<f32> as Clone>::clone(&self.solutions[self.solution_tracker]);
+                }
+                ui.label("Error capacity");
+                ui.add(Slider::new(&mut self.error_c, 0.1..=1.0));
+
+                ui.label("Solver Step");
+                ui.add(Slider::new(&mut self.n_step, 0.1..=1.0));
+
 
             });
 
