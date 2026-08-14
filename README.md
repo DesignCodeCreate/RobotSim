@@ -8,3 +8,6 @@
 
 The numerical solver attempts to find this value of “d” by searching for a value of d that minimizes the error (or difference) between the target and the end effector of the system. It does so in “steps” and which can be edited by the slider. 
 The error capacity slider limits how many solutions can be pushed to the solutions array and so naturally the smaller this value gets fewer solutions are appended to this array, yet they are more precise.
+
+
+You can try it out for yourself by cloning the repo and running the project
