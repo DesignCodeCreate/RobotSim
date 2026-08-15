@@ -44,7 +44,7 @@ jobs:
         shell: bash
         run: |
           mkdir package
-          cp target/${{ matrix.target }}/release/MyApp package/
+          cp target/${{ matrix.target }}/release/RobotSim package/
           tar -czf ${{ matrix.artifact }}.tar.gz -C package .
 
       - name: Package Windows
@@ -52,7 +52,7 @@ jobs:
         shell: pwsh
         run: |
           mkdir package
-          Copy-Item target/${{ matrix.target }}/release/MyApp.exe package/
+          Copy-Item target/${{ matrix.target }}/release/RobotSim.exe package/
           Compress-Archive package/* ${{ matrix.artifact }}.zip
 
       - name: Upload artifact
