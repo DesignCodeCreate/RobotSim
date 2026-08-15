@@ -131,10 +131,10 @@ impl eframe::App for MyApp {
                     } else {
                         self.solution_tracker = 0;
                     }
-                    self.angles = <std::vec::Vec<f32> as Clone>::clone(&self.solutions[self.solution_tracker]);
+                    self.angles = self.solutions[self.solution_tracker].clone();
                 }
                 ui.label("Error capacity");
-                ui.add(Slider::new(&mut self.error_c, 0.1..=1.0));
+                ui.add(Slider::new(&mut self.error_c, 0.01..=1.0));
 
                 ui.label("Solver Step");
                 ui.add(Slider::new(&mut self.n_step, 0.1..=1.0));
