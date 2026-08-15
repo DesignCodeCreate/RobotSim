@@ -121,8 +121,7 @@ impl eframe::App for MyApp {
                 if ui.button("Calculate Angles Numerically").clicked() {
                     self.solution_tracker = 0;
                     self.solutions = self.linkage.find_optimal_tolerance_angles(point::Point { pos: self.target }, self.error_c, self.n_step);
-                    self.angles = <std::vec::Vec<f32> as Clone>::clone(&self.solutions[self.solution_tracker]);
-
+                    self.angles = self.solutions[self.solution_tracker].clone();
                 }
 
                 if ui.button("Next solution").clicked() {
