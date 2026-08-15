@@ -15,7 +15,7 @@ impl MyApp {
         )
     }
 
-    fn convert_points_to_screen(&self, joints: &Vec<Pos2>, resp: Response) -> Vec<Pos2> {
+    fn convert_points_to_screen(&self, joints: &[Pos2], resp: Response) -> Vec<Pos2> {
         let screen_joints: Vec<Pos2> = joints
             .iter()
             .map(|&j| self.convert_point_to_screen(j, resp.clone()))
@@ -35,7 +35,7 @@ impl MyApp {
         painter.circle_filled(position, 4.0, egui::Color32::from_rgb(0, 200, 100));
     }
 
-    fn draw_lines(&self, joints: &Vec<Pos2>, painter: &Painter) {
+    fn draw_lines(&self, joints: &[Pos2], painter: &Painter) {
         // draw connecting line between joints
         if joints.len() >= 2 {
             for pair in joints.windows(2) {
@@ -55,12 +55,11 @@ impl MyApp {
         //     linkage.set_angle(index, *angle);
         // }
 
-
         let joints = linkage
-                        .calculate_positions(&self.angles)
-                        .iter()
-                        .map(|p| p.pos)
-                        .collect::<Vec<_>>();
+            .calculate_positions(&self.angles)
+            .iter()
+            .map(|p| p.pos)
+            .collect::<Vec<_>>();
 
         let screen_joints = self.convert_points_to_screen(&joints, resp);
 

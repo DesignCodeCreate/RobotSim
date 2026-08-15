@@ -58,29 +58,29 @@ impl Default for MyApp {
 }
 
 pub fn world_to_relative(world: &[f32]) -> Vec<f32> {
-        fn normalize_angle(angle: f32) -> f32 {
-            let mut angle = angle % 360.0;
+    fn normalize_angle(angle: f32) -> f32 {
+        let mut angle = angle % 360.0;
 
-            if angle > 180.0 {
-                angle -= 360.0;
-            } else if angle < -180.0 {
-                angle += 360.0;
-            }
-
-            angle
-        }
-        let mut relative = Vec::with_capacity(world.len());
-
-        for (i, &angle) in world.iter().enumerate() {
-            if i == 0 {
-                relative.push(normalize_angle(angle));
-            } else {
-                relative.push(normalize_angle(angle - world[i - 1]));
-            }
+        if angle > 180.0 {
+            angle -= 360.0;
+        } else if angle < -180.0 {
+            angle += 360.0;
         }
 
-        relative
+        angle
     }
+    let mut relative = Vec::with_capacity(world.len());
+
+    for (i, &angle) in world.iter().enumerate() {
+        if i == 0 {
+            relative.push(normalize_angle(angle));
+        } else {
+            relative.push(normalize_angle(angle - world[i - 1]));
+        }
+    }
+
+    relative
+}
 
 impl eframe::App for MyApp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
@@ -100,27 +100,32 @@ impl eframe::App for MyApp {
 
                 for angle in self.angles.iter_mut() {
                     ui.add(Slider::new(angle, -180.0..=180.0));
-
                 }
 
                 ui.label("Target position");
                 ui.add(Slider::new(&mut self.target.x, 0.0..=10.0));
                 ui.add(Slider::new(&mut self.target.y, 0.0..=10.0));
 
-
                 ui.label("Tolerance");
                 ui.add(Slider::new(&mut self.tolerance, -100.0..=100.0));
 
                 if ui.button("Calculate Angles Analytically").clicked() {
-                    self.angles = world_to_relative(&self.linkage.calculate_angles(self.tolerance, &point::Point { pos: self.target }));
+                    self.angles = world_to_relative(
+                        &self
+                            .linkage
+                            .calculate_angles(self.tolerance, &point::Point { pos: self.target }),
+                    );
                 }
-
 
                 ui.label("\n\n\nNumerical Algorithms ");
 
                 if ui.button("Calculate Angles Numerically").clicked() {
                     self.solution_tracker = 0;
-                    self.solutions = self.linkage.find_optimal_tolerance_angles(point::Point { pos: self.target }, self.error_c, self.n_step);
+                    self.solutions = self.linkage.find_optimal_tolerance_angles(
+                        point::Point { pos: self.target },
+                        self.error_c,
+                        self.n_step,
+                    );
                     self.angles = self.solutions[self.solution_tracker].clone();
                 }
 
@@ -137,8 +142,6 @@ impl eframe::App for MyApp {
 
                 ui.label("Solver Step");
                 ui.add(Slider::new(&mut self.n_step, 0.1..=1.0));
-
-
             });
 
             // allocate a painter that fills the remaining central panel area
