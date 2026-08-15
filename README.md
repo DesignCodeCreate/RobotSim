@@ -10,4 +10,8 @@ The numerical solver attempts to find this value of “d” by searching for a v
 The error capacity slider limits how many solutions can be pushed to the solutions array and so naturally the smaller this value gets fewer solutions are appended to this array, yet they are more precise.
 
 
-You can try it out for yourself by cloning the repo and running the project
+You can try it out for yourself by cloning the repo and running the project.
+
+
+https://github.com/user-attachments/assets/d10361d7-61f1-438c-b506-2892adceee93
+
